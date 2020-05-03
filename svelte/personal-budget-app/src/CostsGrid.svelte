@@ -5,7 +5,8 @@
     import {DATE_FORMAT_MOMENT} from './appSettings'
 
     let currentPage = 1
-    let pageSize = 10
+    const pageSize = 10
+
     $: items = $costsOrdered
     $: paginatedItems = paginate({items, pageSize, currentPage})
 </script>
