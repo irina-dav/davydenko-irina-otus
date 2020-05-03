@@ -4,38 +4,67 @@
     import {costs, categories} from './store.js';
     import {onMount} from "svelte";
 
+    // errors for form validation
     let errors = {};
 
+    // form inputs default values
+    const defaultDate = new Date();
+    const defaultValue = 500;
+
+    let modalForm;
+
     onMount(async () => {
-        let elemSelects = document.querySelectorAll('select');
         let elemDatePickers = document.querySelectorAll('.datepicker');
-        let elemModals = document.querySelectorAll('.modal');
-        M.FormSelect.init(elemSelects, {container: 'body'});
-        M.Datepicker.init(elemDatePickers, {container: 'body', format: DATE_FORMAT, defaultDate: new Date(), setDefaultDate: true});
-        M.Modal.init(elemModals);
+        let elemSelect = document.getElementById('cost-category');
+        let elemModalForm = document.getElementById('modalNewCost');
+        M.Datepicker.init(elemDatePickers, {container: 'body', format: DATE_FORMAT});
+        M.FormSelect.init(elemSelect);
+        modalForm = M.Modal.init(elemModalForm, {'onOpenStart': resetForm});
     });
 
     function addCost(event) {
-        errors = {};
         const formData = new FormData(document.forms.formAddCost);
-        let newCost = {
-            date: moment(formData.get("cost-date"), DATE_FORMAT_MOMENT).format(),
-            category: formData.get("cost-category"),
-            value: formData.get("cost-value")
+        if (validateFormData(formData)) {
+            costs.addCost({
+                date: moment(formData.get("cost-date"), DATE_FORMAT_MOMENT).format(),
+                category: formData.get("cost-category"),
+                value: formData.get("cost-value")
+            });
+            closeForm();
         }
-        if (!newCost.date) {
+    }
+
+    function resetForm() {
+        errors = {};
+
+        let selectedCategory = document.getElementById('cost-category');
+        selectedCategory.selectedIndex = 0;
+        selectedCategory.dispatchEvent(new Event('change'));
+
+        document.getElementById('cost-value').value = defaultValue;
+        M.updateTextFields();
+
+        let datePickerInput = M.Datepicker.getInstance(document.getElementById('cost-date'));
+        datePickerInput.setDate(defaultDate);
+        datePickerInput.setInputValue();
+    }
+
+    function closeForm() {
+        modalForm.close();
+    }
+
+    function validateFormData(formData) {
+        errors = {};
+        if (!moment(formData.get("cost-date"), DATE_FORMAT_MOMENT).isValid()) {
             errors.date = "Invalid cost date";
         }
-        if (!newCost.category) {
+        if (!formData.get("cost-category")) {
             errors.category = "Invalid cost category";
         }
-        if (newCost.value <= 0) {
+        if (formData.get("cost-value") <= 0) {
             errors.value = "Invalid cost value";
         }
-        if (Object.keys(errors).length === 0) {
-            costs.addCost(newCost);
-            M.Modal.getInstance(document.getElementById('modalNewCost')).close();
-        }
+        return (Object.keys(errors).length === 0);
     }
 </script>
 
@@ -43,12 +72,10 @@
     .modal {
         height: 70% !important
     }
-    .datepicker {
-
-    }
 </style>
 
-<button data-target="modalNewCost" class="btn modal-trigger">Add new cost <i class="material-icons right">add</i></button>
+<button data-target="modalNewCost" class="btn modal-trigger">Add new cost <i class="material-icons right">add</i>
+</button>
 <div id="modalNewCost" class="modal">
     <div class="modal-content">
         <form class="col s12" name="formAddCost">
@@ -71,15 +98,19 @@
 
             <div class="input-field col s6">
                 <label for="cost-value">Cost value</label>
-                <input type=number name="cost-value" id="cost-value" value="500">
+                <input type=number name="cost-value" id="cost-value">
                 {#if (errors.value)}<span class="red-text text-darken-2">{errors['value']}</span>{/if}
             </div>
             <div class="input-field">
-                <button
-                        type="submit"
+                <button type="submit"
                         on:click|preventDefault={addCost}
                         class="btn waves-effect waves-light">
-                    Add Cost
+                    Add Cost <i class="material-icons right">add</i>
+                </button>
+                <button
+                        on:click|preventDefault={closeForm}
+                        class="btn waves-effect waves-light teal grey right">
+                    Close <i class="material-icons right">close</i>
                 </button>
             </div>
         </form>
