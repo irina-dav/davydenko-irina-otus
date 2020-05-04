@@ -12,17 +12,19 @@
     const defaultValue = 500;
 
     let modalForm;
+    let elemModalForm;
+    let elemCostCategory;
+    let elemCostDate;
+    let elemCostValue;
 
     onMount(async () => {
         let elemDatePickers = document.querySelectorAll('.datepicker');
-        let elemSelect = document.getElementById('cost-category');
-        let elemModalForm = document.getElementById('modalNewCost');
         M.Datepicker.init(elemDatePickers, {container: 'body', format: DATE_FORMAT});
-        M.FormSelect.init(elemSelect);
+        M.FormSelect.init(elemCostCategory);
         modalForm = M.Modal.init(elemModalForm, {'onOpenStart': resetForm});
     });
 
-    function addCost(event) {
+    function addCost() {
         const formData = new FormData(document.forms.formAddCost);
         if (validateFormData(formData)) {
             costs.addCost({
@@ -37,14 +39,13 @@
     function resetForm() {
         errors = {};
 
-        let selectedCategory = document.getElementById('cost-category');
-        selectedCategory.selectedIndex = 0;
-        selectedCategory.dispatchEvent(new Event('change'));
+        elemCostCategory.selectedIndex = 0;
+        elemCostCategory.dispatchEvent(new Event('change'));
 
-        document.getElementById('cost-value').value = defaultValue;
+        elemCostValue.value = defaultValue;
         M.updateTextFields();
 
-        let datePickerInput = M.Datepicker.getInstance(document.getElementById('cost-date'));
+        let datePickerInput = M.Datepicker.getInstance(elemCostDate);
         datePickerInput.setDate(defaultDate);
         datePickerInput.setInputValue();
     }
@@ -54,6 +55,7 @@
     }
 
     function validateFormData(formData) {
+        let form = document.forms.formAddCost;
         errors = {};
         if (!moment(formData.get("cost-date"), DATE_FORMAT_MOMENT).isValid()) {
             errors.date = "Invalid cost date";
@@ -76,11 +78,11 @@
 
 <button data-target="modalNewCost" class="btn modal-trigger">Add new cost <i class="material-icons right">add</i>
 </button>
-<div id="modalNewCost" class="modal">
+<div id="modalNewCost" class="modal" bind:this={elemModalForm}>
     <div class="modal-content">
         <form class="col s12" name="formAddCost">
             <div class="input-field">
-                <select name="cost-category" id="cost-category">
+                <select name="cost-category" id="cost-category" bind:this={elemCostCategory}>
                     <option value="" disabled selected>Choose category</option>
                     {#each $categories as category}
                         <option value={category.id}>{category.name}</option>
@@ -92,13 +94,13 @@
 
             <div class="input-field col s6">
                 <label for="cost-date">Cost date</label>
-                <input type=text name="cost-date" id="cost-date" class="datepicker">
+                <input type=text name="cost-date" id="cost-date" class="datepicker" bind:this={elemCostDate}>
                 {#if (errors.date)}<span class="red-text text-darken-2">{errors['date']}</span>{/if}
             </div>
 
             <div class="input-field col s6">
                 <label for="cost-value">Cost value</label>
-                <input type=number name="cost-value" id="cost-value">
+                <input type=number name="cost-value" id="cost-value" bind:this={elemCostValue}>
                 {#if (errors.value)}<span class="red-text text-darken-2">{errors['value']}</span>{/if}
             </div>
             <div class="input-field">
