@@ -55,7 +55,6 @@
     }
 
     function validateFormData(formData) {
-        let form = document.forms.formAddCost;
         errors = {};
         if (!moment(formData.get("cost-date"), DATE_FORMAT_MOMENT).isValid()) {
             errors.date = "Invalid cost date";
