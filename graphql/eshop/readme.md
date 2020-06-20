@@ -25,3 +25,6 @@
 - [Faker.js](https://github.com/Marak/faker.js) - библиотека для генерации fake данных
  -[Nodemon](https://www.npmjs.com/package/nodemon) - для горячей перезагрузки сервера
 - [CodeSandbox](https://codesandbox.io/) - для демонстрации, используется интеграция с github
+
+## Demo (sandbox)
+https://u8045.sse.codesandbox.io/
