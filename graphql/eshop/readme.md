@@ -23,7 +23,7 @@
 Использованы инструменты:
 - [Apollo-server](https://github.com/apollographql/apollo-server) - для запуска GraphQL сервера
 - [Faker.js](https://github.com/Marak/faker.js) - библиотека для генерации fake данных
- -[Nodemon](https://www.npmjs.com/package/nodemon) - для горячей перезагрузки сервера
+- [Nodemon](https://www.npmjs.com/package/nodemon) - для горячей перезагрузки сервера
 - [CodeSandbox](https://codesandbox.io/) - для демонстрации, используется интеграция с github
 
 ## Demo (sandbox)
