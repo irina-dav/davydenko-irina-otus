@@ -24,13 +24,14 @@
 
             <v-row>
               <v-flex md8>
-                <v-slider :max="durationMax" :min="durationMin" class="align-center pa-6 pt-0 pb-0" hide-details
+                <v-slider :max="durationRange[1]" :min="durationRange[0]" class="align-center pa-6 pt-0 pb-0"
+                          hide-details
                           v-model="duration">
                   <template v-slot:prepend>
-                    <span class="text--darken-4 blue--text">{{ durationMin }}</span>
+                    <span class="text--darken-4 blue--text">{{ durationRange[0] }}</span>
                   </template>
                   <template v-slot:append>
-                    <span class="text--darken-4 blue--text">{{ durationMax }}</span>
+                    <span class="text--darken-4 blue--text">{{ durationRange[1] }}</span>
                   </template>
                 </v-slider>
               </v-flex>
@@ -42,13 +43,13 @@
 
             <v-row class="my-0">
               <v-flex md8>
-                <v-slider :max="complexityMax" :min="complexityMin" class="align-center pa-6 pt-0 pb-0"
+                <v-slider :max="complexityRange[1]" :min="complexityRange[0]" class="align-center pa-6 pt-0 pb-0"
                           hide-details v-model="complexity">
                   <template v-slot:prepend>
-                    <span class="text--darken-4 blue--text">{{ complexityMin }}</span>
+                    <span class="text--darken-4 blue--text">{{ complexityRange[0] }}</span>
                   </template>
                   <template v-slot:append>
-                    <span class="text--darken-4 blue--text">{{ complexityMax }}</span>
+                    <span class="text--darken-4 blue--text">{{ complexityRange[1] }}</span>
                   </template>
                 </v-slider>
               </v-flex>
@@ -62,14 +63,14 @@
 
             <v-card-title class="headline">Select operations</v-card-title>
 
-            <v-list v-for="(value, key, idx) in operations" :key="idx" >
+            <v-list :key="idx" v-for="(value, key, idx) in operations">
               <v-list-item class="py-0 my-0">
-                <v-checkbox :label="key" v-model="operations[key]" class="py-0 my-0 text-capitalize shrink">
+                <v-checkbox :label="key" class="py-0 my-0 text-capitalize shrink" v-model="operations[key]">
                 </v-checkbox>
               </v-list-item>
             </v-list>
 
-            <v-banner :value="!isAnyOperationChecked" single-line transition="slide-y-transition" color=purple--text>
+            <v-banner :value="!isAnyOperationChecked" color=purple--text single-line transition="slide-y-transition">
               At least one operation must be selected...
             </v-banner>
 
@@ -78,7 +79,7 @@
             <v-card-actions>
               <v-layout align-baseline class="mr-2 ml-2" justify-end row>
                 <div>
-                  <v-btn color="indigo" outlined tile :disabled="!isAnyOperationChecked"
+                  <v-btn :disabled="!isAnyOperationChecked" color="indigo" outlined tile
                          to="/train">
                     <v-icon left>mdi-pac-man</v-icon>
                     Play!
@@ -97,25 +98,28 @@
 <script>
   export default {
     name: "PageSettings",
-    data: () => ({
-      accuracy: 90,
-      scoreDone: 14,
-      scoreQnt: 25,
-      dayNum: 20,
-      durationMin: 1,
-      durationMax: 15,
-      duration: 7,
-      complexityMin: 1,
-      complexityMax: 10,
-      complexity: 5,
-      operations: {
-        addition: true,
-        subtraction: false,
-        division: false,
-        multiplication: false,
-        power: false
-      },
-    }),
+    data() {
+      return {
+        accuracy: this.$store.state.settings.accuracy,
+        scoreDone: this.$store.state.settings.scoreDone,
+        scoreQnt: this.$store.state.settings.scoreQnt,
+        dayNum: this.$store.state.settings.dayNum,
+        duration: this.$store.state.settings.duration,
+        complexity: this.$store.state.settings.complexity,
+        operations: this.$store.state.settings.operations,
+        durationRange: [1, 7],
+        complexityRange: [1, 10],
+      }
+    },
+    beforeRouteLeave(to, from, next) {
+      this.$store.dispatch('setSettings', {
+        duration: this.duration,
+        complexity: this.complexity,
+        operations: this.operations
+      });
+      this.$store.dispatch('startGame');
+      next();
+    },
     computed: {
       isAnyOperationChecked() {
         return Object.values(this.operations).some(v => v);
