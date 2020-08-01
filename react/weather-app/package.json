@@ -2,6 +2,8 @@
   "name": "weather-app",
   "version": "1.0.0",
   "description": "Simple weather app",
+  "license": "",
+  "repository": {},
   "scripts": {
     "start": "npx webpack-dev-server --mode development --hot",
     "build": "webpack --mode production"
@@ -16,8 +18,9 @@
     "@babel/preset-typescript": "^7.10.4",
     "@types/react": "^16.9.34",
     "@types/react-dom": "^16.9.6",
+    "@types/react-redux": "^7.1.9",
     "awesome-typescript-loader": "^5.2.1",
-    "css-loader": "^3.5.2",
+    "css-loader": "^3.6.0",
     "html-webpack-plugin": "^4.2.0",
     "mini-css-extract-plugin": "^0.9.0",
     "source-map-loader": "^0.2.4",
@@ -27,9 +30,18 @@
     "webpack-dev-server": "^3.10.3"
   },
   "dependencies": {
+    "@babel/polyfill": "^7.10.4",
+    "@types/react-router-dom": "^5.1.5",
+    "axios": "^0.19.2",
     "babel-loader": "^8.1.0",
+    "babel-polyfill": "^6.26.0",
     "dotenv": "^8.2.0",
     "react": "^16.13.1",
-    "react-dom": "^16.13.1"
+    "react-dom": "^16.13.1",
+    "react-redux": "^7.2.0",
+    "react-router-dom": "^5.2.0",
+    "redux": "^4.0.5",
+    "redux-thunk": "^2.3.0",
+    "style-loader": "^1.2.1"
   }
 }

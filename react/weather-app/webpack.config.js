@@ -2,15 +2,17 @@ const path = require("path");
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
+require('@babel/polyfill');
 require('dotenv').config();
 
 module.exports = {
-    entry: "./src/index.tsx",
+    entry: ['babel-polyfill',"./src/index.tsx"],
     target: "web",
     /*mode: "development",*/
     output: {
       path: path.resolve(__dirname, "build"),
       filename: "bundle.js",
+      publicPath: '/'
     },
     resolve: {
       extensions: [".js", ".jsx", ".json", ".ts", ".tsx"],
@@ -29,14 +31,19 @@ module.exports = {
         },
         {
           test: /\.css$/,
-          loader: "css-loader",
+          //loader: "css-loader",
+          use: ['style-loader', 'css-loader'],
         },
       ],
     },
+  devServer: {
+    historyApiFallback: true,
+  },
     plugins: [
       new webpack.DefinePlugin({
         'process.env': {
-          API_KEY: JSON.stringify(process.env.API_KEY)
+          API_KEY: JSON.stringify(process.env.API_KEY),
+          API_KEY_TOMTOM: JSON.stringify(process.env.API_KEY_TOMTOM)
         },
       }),
       new HtmlWebpackPlugin({

@@ -1,0 +1,5 @@
+{
+  "429": "You make more than 60 API calls per minute.",
+  "401": "There is problem with API key.",
+  "404": "You specify wrong city name"
+}
