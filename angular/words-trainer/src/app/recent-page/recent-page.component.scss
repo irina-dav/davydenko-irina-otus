@@ -1,0 +1,16 @@
+.card {
+  height: 100px;
+  box-shadow: 1px 1px 10px 1px lightgrey;
+}
+
+.card .card-text {
+  opacity: 0.2;
+}
+
+.card:hover {
+  box-shadow: 1px 1px 8px 1px lightskyblue;
+}
+
+.card:hover .card-text {
+  opacity: 1.0;
+}
