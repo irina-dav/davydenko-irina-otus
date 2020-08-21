@@ -1,9 +1,18 @@
 import * as React from "react";
+import {connect} from "react-redux";
+import {withRouter} from 'react-router';
+import {RouteComponentProps} from 'react-router-dom';
+import {IWeatherStore} from "../store/types";
 import {IWeatherObject} from "./Interfaces";
 
-interface IWeatherCardProps {
-    city: string;
-    currentWeather: IWeatherObject
+interface RouteInfo {
+    name: string;
+}
+
+interface IWeatherCardProps extends RouteComponentProps<RouteInfo> {
+    currentWeather: IWeatherObject;
+    forecast: IWeatherObject[];
+    test?(name: string): void;
 }
 
 interface IPropsItem {
@@ -11,33 +20,50 @@ interface IPropsItem {
     body: string | number
 }
 
+
 const WeatherItem: React.FC<IPropsItem> = ({title, body}) => (
-    <div><span className="font-weight-bolder">{title}</span>: {body}</div>
+    <div className='small'><span className="font-weight-bolder">{title}</span>: {body}</div>
 );
 
-export default class WeatherCard extends React.Component<IWeatherCardProps> {
+export const WeatherBox: React.FC<{ weather: IWeatherObject }> = ({weather}) => (
+    <div className='card'>
+        <h5 className='card-header'>
+            {weather.date ? (new Date(parseInt(weather.date) * 1000)).toDateString() : `Today in ${weather.city}`}
+        </h5>
+        <div className='card-body test'>
+            <div className='card-text'>
+                <img src={weather.icon} alt={weather.main}/>
+                <WeatherItem title='Main' body={weather.main}/>
+                <WeatherItem title='Description' body={weather.description}/>
+                <hr/>
+                <WeatherItem title='Temp' body={`${weather.data.temp}°`}/>
+                <WeatherItem title='Pressure' body={`${weather.data.pressure} hPa`}/>
+                <WeatherItem title='Humidity' body={`${weather.data.humidity}%`}/>
+            </div>
+        </div>
+    </div>
+);
+
+class WeatherCard extends React.Component<IWeatherCardProps> {
 
     constructor(props: IWeatherCardProps) {
         super(props);
     }
 
     render() {
+        const weather = this.props.currentWeather;
         return (
-            this.props.currentWeather != null &&
-            <div className='card'>
-              <h5 className='card-header'>Today in {this.props.currentWeather.city}</h5>
-              <div className='card-body'>
-                <div className='card-text'>
-                  <img src={this.props.currentWeather.icon} alt={this.props.currentWeather.main}/>
-                  <WeatherItem title='Main' body={this.props.currentWeather.main}/>
-                  <WeatherItem title='Description' body={this.props.currentWeather.description}/>
-                  <hr/>
-                  <WeatherItem title='Temp' body={`${this.props.currentWeather.data.temp}°`}/>
-                  <WeatherItem title='Pressure' body={`${this.props.currentWeather.data.pressure} hPa`}/>
-                  <WeatherItem title='Humidity' body={`${this.props.currentWeather.data.humidity}%`}/>
-                </div>
-              </div>
-            </div>
+            weather != null &&
+                <WeatherBox weather={weather} />
         );
     }
 }
+
+function mapStateToProps(store: IWeatherStore) {
+    return {
+        currentWeather: store.currentWeather,
+        forecast: store.forecast
+    };
+}
+
+export default connect(mapStateToProps)(withRouter(WeatherCard))

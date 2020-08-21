@@ -1,10 +1,12 @@
 import * as React from "react";
+import {connect} from "react-redux";
+import {IWeatherStore} from "../store/types";
 
 interface IErrorCardProps {
     error: string;
 }
 
-export default class ErrorCard extends React.Component<IErrorCardProps> {
+class ErrorCard extends React.Component<IErrorCardProps> {
 
     constructor(props: IErrorCardProps) {
         super(props);
@@ -19,3 +21,11 @@ export default class ErrorCard extends React.Component<IErrorCardProps> {
         );
     }
 }
+
+function mapStateToProps(store: IWeatherStore) {
+    return {
+        error: store.error?.errorMessage,
+    };
+}
+
+export default connect(mapStateToProps)(ErrorCard);

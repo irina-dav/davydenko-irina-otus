@@ -1,0 +1,23 @@
+[aria-expanded="false"] .fa:before {
+    content: "\f139";
+    margin-left: 10px;
+}
+
+[aria-expanded="false"] .fa:after {
+    content: "collapse";
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-size: small;
+    margin-left: 5px;
+}
+
+[aria-expanded="true"] .fa:before {
+    content: "\f13a";
+    margin-left: 10px;
+}
+
+[aria-expanded="true"] .fa:after {
+    content: "expand";
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-size: small;
+    margin-left: 5px;
+}

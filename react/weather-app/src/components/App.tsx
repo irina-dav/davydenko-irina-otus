@@ -1,84 +1,77 @@
-import * as React from 'react'
-import WeatherCard from './WeatherCard'
-import {IWeatherObject} from "./Interfaces";
-import FavoritesList from './FavoritesList'
-import {SearchWeatherFormWithApi} from './SearchForm'
+import * as React from 'react';
+import {connect} from "react-redux";
+import {Route, Switch} from 'react-router-dom'
+import {ThunkDispatch} from "redux-thunk";
+import {fetchWeatherApi} from "../store/actions";
+import {IWeatherStore, WeatherActionTypes} from "../store/types";
 import ErrorCard from "./ErrorCard";
+import FavoritesList from './FavoritesList';
+import ForecastCard from "./ForecastCard";
+import SearchForm from './SearchForm';
+import WeatherCard from './WeatherCard';
 
-interface IProps {
-    city: string;
-    favorites: Array<string>;
+interface IAppProps {
+    updateWeather(city: string): void;
 }
 
-interface IState {
-    city: string;
-    newFavoriteCity?: string;
-    currentWeather?: IWeatherObject;
-    favorites: Array<string>;
-    error?: string;
-}
+const MainBox: React.FC = () => (
+    <div className="App d-flex flex-column pt-2">
+        <div className="col-12 row pt-2">
+            <div className="col-4">
+                <SearchForm/>
+            </div>
+            <div className="col-4">
+                <FavoritesList/>
+            </div>
+        </div>
+        <div className="col-12 row pt-2">
+            <div className="col-8">
+                <ErrorCard/>
+            </div>
+        </div>
+    </div>
+);
 
-class App extends React.Component<IProps, IState> {
+const NotFoundPage = () => {
+    return (
+        <div className="d-flex justify-content-center align-items-center" id="main">
+            <h1 className="mr-3 pr-3 align-top border-right inline-block align-content-center">404</h1>
+            <div className="inline-block align-middle">
+                <h2 className="font-weight-normal lead" id="desc">The page you requested was not found.</h2>
+            </div>
+        </div>)
+};
 
-    constructor(props: IProps) {
+class App extends React.Component<IAppProps> {
+
+    constructor(props: IAppProps) {
         super(props);
-        this.chooseCityFormFavorites = this.chooseCityFormFavorites.bind(this);
-        this.changeCurrentCity = this.changeCurrentCity.bind(this);
-        this.updateWeather = this.updateWeather.bind(this);
-        this.setError = this.setError.bind(this);
-        this.state = {
-            city: props.city,
-            favorites: props.favorites
-        };
-    }
-
-    chooseCityFormFavorites(newCity: string): void {
-        this.setState({city: newCity, currentWeather: null});
-    };
-
-    updateWeather(weather: IWeatherObject) {
-        this.setState({currentWeather: weather});
-    }
-
-    setError(errorText: string): void {
-        this.setState({error: errorText});
-    }
-
-    changeCurrentCity(currCity: string): void {
-        this.setState({city: currCity});
     }
 
     render() {
         return (
-            <div className="App container pt-5">
-                <div className="row">
-                    <div className="col-5">
-                        <div className="pb-2">
-                            <SearchWeatherFormWithApi
-                                city={this.state.city}
-                                setError={this.setError}
-                                changeCurrentCity={this.changeCurrentCity}
-                                updateWeather={this.updateWeather}
-                                handlerSearchClick={click => {this.chooseCityFormFavorites = click; click(this.state.city);}}/>
-                        </div>
-                        <div className="pt-2">
-                            <FavoritesList
-                                newFavorite={this.state.city}
-                                chooseFavorite={this.chooseCityFormFavorites}>
-                                    {this.props.favorites}
-                            </FavoritesList>
-                        </div>
-                    </div>
-                    <div className="col-5 pb-2">
-                        <ErrorCard error={this.state.error}/>
-                        <WeatherCard
-                            city={this.state.city}
-                            currentWeather={this.state.currentWeather}/>
-                    </div>
-                </div>
-            </div>
+            <Switch>
+                <Route exact path='/' component={MainBox}/>
+                <Route exact path='/city/:name'
+                       render={({match}) => {
+                           this.props.updateWeather(match.params.name);
+                           return (<div><MainBox/>
+                               <div className='col-12 row pt-3'>
+                                   <div className='col-4'><WeatherCard/></div>
+                                   <div className='col-8'><ForecastCard/></div>
+                               </div>
+                           </div>)
+                       }}/>
+                <Route component={NotFoundPage}/>
+            </Switch>
         );
     }
 }
 
-export default App;
+function mapDispatchToProps(dispatch: ThunkDispatch<IWeatherStore, undefined, WeatherActionTypes>) {
+    return {
+        updateWeather: (city: string) => dispatch(fetchWeatherApi(city)),
+    };
+}
+
+export default connect(null, mapDispatchToProps)(App);
