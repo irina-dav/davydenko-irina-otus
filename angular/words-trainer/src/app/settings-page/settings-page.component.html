@@ -1,12 +1,12 @@
-<div class="mt-2 m-auto col-10">
+<div class="mt-2 m-auto col col-xl-10 col-lg-12">
   <form>
     <div class="card shadow">
       <h5 class="card-header">Adjust your training's settings</h5>
       <div class="card-body">
         <div class="form-group row">
-          <label for="inputState" class="col-4 col-form-label text-left ">Language</label>
+          <label class="col-4 col-form-label text-left " for="inputState">Language</label>
           <div class="col-6">
-            <select id="inputState" class="form-control">
+            <select class="form-control" id="inputState">
               <option selected>English</option>
               <option>Language2</option>
               <option>Language3</option>
@@ -14,7 +14,7 @@
           </div>
         </div>
         <div class="form-group row">
-          <label for="settingWordsNumber" class="col-4 col-form-label text-left">
+          <label class="col-4 col-form-label text-left" for="settingWordsNumber">
             Number of words in a training session
           </label>
           <div class="col-1 alert alert-info font-weight-bold m-3 p-1 -text-height">
@@ -22,43 +22,43 @@
           </div>
           <div class="col-5 form-row align-items-center">
             <div class="col-form-label col-auto">
-              <small >{{wordsNumberMin}}</small>
+              <small>{{wordsNumberMin}}</small>
             </div>
-            <div class="col-10">
-              <input type="range" id="settingWordsNumber" name="settingWordsNumber"
+            <div class="col col-10">
+              <input [(ngModel)]="wordsNumber" [max]="wordsNumberMax" [min]="wordsNumberMin"
                      class="form-control-range"
-                     [min]="wordsNumberMin"
-                     [max]="wordsNumberMax"
-                     [(ngModel)]="wordsNumber">
+                     id="settingWordsNumber"
+                     name="settingWordsNumber"
+                     type="range">
             </div>
             <div class="col-form-label col-auto">
-              <small >{{wordsNumberMax}}</small >
+              <small>{{wordsNumberMax}}</small>
             </div>
           </div>
         </div>
         <div class="form-group row">
-        <label for="settingDuration" class="col-4 col-form-label text-left">
-          Duration (in minutes) of a training session
-        </label>
-        <div class="col-1 alert alert-info font-weight-bold m-3 p-1">
-          {{duration}}
+          <label class="col-4 col-form-label text-left" for="settingDuration">
+            Duration (in minutes) of a training session
+          </label>
+          <div class="col-1 alert alert-info font-weight-bold m-3 p-1">
+            {{duration}}
+          </div>
+          <div class="col-5 form-row align-items-center">
+            <div class="col-form-label col-auto">
+              <small>{{durationMin}}</small>
+            </div>
+            <div class="col-10">
+              <input [(ngModel)]="duration" [max]="durationMax" [min]="durationMin"
+                     class="form-control-range"
+                     id="settingDuration"
+                     name="settingDuration"
+                     type="range">
+            </div>
+            <div class="col-form-label col-auto">
+              <small>{{durationMax}}</small>
+            </div>
+          </div>
         </div>
-        <div class="col-5 form-row align-items-center">
-          <div class="col-form-label col-auto">
-            <small>{{durationMin}}</small>
-          </div>
-          <div class="col-10">
-            <input type="range" id="settingDuration" name="settingDuration"
-                   class="form-control-range"
-                   [min]="durationMin"
-                   [max]="durationMax"
-                   [(ngModel)]="duration">
-          </div>
-          <div class="col-form-label col-auto">
-            <small >{{durationMax}}</small >
-          </div>
-        </div>
-      </div>
       </div>
       <div class="card-footer">
         <button class="btn btn-outline-success">Save <i class="fas fa-check-double"></i></button>

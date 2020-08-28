@@ -1,8 +1,8 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Subscription, timer} from 'rxjs';
 import {map, take, takeWhile} from 'rxjs/operators';
-import {Translation} from '../interfaces';
-import words from '../words.json';
+import {Translation} from '../shared/interfaces';
+import {VocabularyService} from '../shared/vocabulary.service';
 
 @Component({
   selector: 'app-training-page',
@@ -22,8 +22,9 @@ export class TrainingPageComponent implements OnInit, OnDestroy {
   leftTimePercentage: number;
   durationMin = 5;
   durationMs: number = this.durationMin * 60 * 1000;
+  sub: Subscription;
 
-  constructor() {
+  constructor(private vocabularyService: VocabularyService) {
   }
 
   ngOnInit(): void {
@@ -31,6 +32,9 @@ export class TrainingPageComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.finishTimer();
+    if (this.sub) {
+      this.sub.unsubscribe();
+    }
   }
 
   startTimer(): void {
@@ -50,7 +54,8 @@ export class TrainingPageComponent implements OnInit, OnDestroy {
   startTrain(): void {
     this.isTraining = true;
     this.order = 1;
-    this.trainWords = words;
+    this.sub = this.vocabularyService.getTranslationsAll()
+      .subscribe(data => this.trainWords = data);
     this.leftTimeMs = this.durationMs;
     this.leftTimePercentage = 100;
     this.startTimer();
