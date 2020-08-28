@@ -1,0 +1,13 @@
+<div class="col-12 container">
+  <app-add-word></app-add-word>
+  <ul class="list-inline row justify-content-start">
+    <li *ngFor="let item of recentWords" class="list-item col-4">
+      <div class="card mt-2">
+        <div class="card-body">
+          <h5 class="card-title">{{item.targetText}}</h5>
+          <p class="card-text">{{item.sourceText}}</p>
+        </div>
+      </div>
+    </li>
+  </ul>
+</div>

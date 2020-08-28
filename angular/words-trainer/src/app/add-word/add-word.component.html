@@ -1,0 +1,35 @@
+<div class="container">
+  <button class="btn btn-outline-success" data-target="#addNewWordModal" data-toggle="modal" type="button">
+    Add new word <i class="fas fa-plus"></i>
+  </button>
+  <hr>
+  <div aria-hidden="true" class="modal fade" id="addNewWordModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Add new word into the list</h5>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="form-group row">
+              <label class="col-form-label col-4">Source word</label>
+              <div class="col-auto">
+                <input class="form-control" type="text">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-form-label col-4">Target word</label>
+              <div class="col-auto">
+                <input class="form-control" type="text">
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
+          <button class="btn btn-success">Add</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

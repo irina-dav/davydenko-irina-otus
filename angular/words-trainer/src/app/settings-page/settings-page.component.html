@@ -1,0 +1,68 @@
+<div class="mt-2 m-auto col-10">
+  <form>
+    <div class="card shadow">
+      <h5 class="card-header">Adjust your training's settings</h5>
+      <div class="card-body">
+        <div class="form-group row">
+          <label for="inputState" class="col-4 col-form-label text-left ">Language</label>
+          <div class="col-6">
+            <select id="inputState" class="form-control">
+              <option selected>English</option>
+              <option>Language2</option>
+              <option>Language3</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="settingWordsNumber" class="col-4 col-form-label text-left">
+            Number of words in a training session
+          </label>
+          <div class="col-1 alert alert-info font-weight-bold m-3 p-1 -text-height">
+            {{wordsNumber}}
+          </div>
+          <div class="col-5 form-row align-items-center">
+            <div class="col-form-label col-auto">
+              <small >{{wordsNumberMin}}</small>
+            </div>
+            <div class="col-10">
+              <input type="range" id="settingWordsNumber" name="settingWordsNumber"
+                     class="form-control-range"
+                     [min]="wordsNumberMin"
+                     [max]="wordsNumberMax"
+                     [(ngModel)]="wordsNumber">
+            </div>
+            <div class="col-form-label col-auto">
+              <small >{{wordsNumberMax}}</small >
+            </div>
+          </div>
+        </div>
+        <div class="form-group row">
+        <label for="settingDuration" class="col-4 col-form-label text-left">
+          Duration (in minutes) of a training session
+        </label>
+        <div class="col-1 alert alert-info font-weight-bold m-3 p-1">
+          {{duration}}
+        </div>
+        <div class="col-5 form-row align-items-center">
+          <div class="col-form-label col-auto">
+            <small>{{durationMin}}</small>
+          </div>
+          <div class="col-10">
+            <input type="range" id="settingDuration" name="settingDuration"
+                   class="form-control-range"
+                   [min]="durationMin"
+                   [max]="durationMax"
+                   [(ngModel)]="duration">
+          </div>
+          <div class="col-form-label col-auto">
+            <small >{{durationMax}}</small >
+          </div>
+        </div>
+      </div>
+      </div>
+      <div class="card-footer">
+        <button class="btn btn-outline-success">Save <i class="fas fa-check-double"></i></button>
+      </div>
+    </div>
+  </form>
+</div>
