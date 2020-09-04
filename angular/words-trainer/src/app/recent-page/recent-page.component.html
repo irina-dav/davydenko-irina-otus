@@ -1,11 +1,22 @@
 <div class="col-12 container">
-  <app-add-word></app-add-word>
+  <div class="row justify-content-center">
+    <app-add-word></app-add-word>
+    <app-add-phrase></app-add-phrase>
+  </div>
+  <hr>
   <ul class="list-inline row justify-content-start">
-    <li *ngFor="let item of recentWords" class="list-item col-4">
+    <li *ngFor="let item of (recentWords$ | async)" class="list-item col-4">
       <div class="card mt-2">
-        <div class="card-body">
-          <h5 class="card-title">{{item.targetText}}</h5>
-          <p class="card-text">{{item.sourceText}}</p>
+        <div class="d-flex justify-content-end align-items-center m-0 p-0">
+          <button
+            (click)="deleteWord(item)"
+            class="float-right btn btn-outline-warning  btn-sm">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="card-body pt-0 mt-0">
+          <h5 class="card-title">{{item.sourceText}}</h5>
+          <p class="card-text">{{item.targetText}}</p>
         </div>
       </div>
     </li>

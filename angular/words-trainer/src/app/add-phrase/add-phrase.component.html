@@ -1,0 +1,53 @@
+<div class="container">
+  <button class="btn btn-outline-success shadow rounded-0"
+          data-target="#addNewPhraseModal" data-toggle="modal" type="button">
+    Add new phrase <i class="fas fa-plus"></i>
+  </button>
+  <div aria-hidden="true" class="modal fade" id="addNewPhraseModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Add words from a phrase into the vocabulary</h5>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="form-group row align-items-center">
+              <label class="col-form-label col-4 text-left">Phrase (in English) for translation</label>
+              <div class="col-7">
+                <textarea [(ngModel)]="phrase" class="form-control" id="wordSource" name="wordSource"
+                          rows="3"></textarea>
+              </div>
+            </div>
+            <h6 *ngIf="(wordsArr)?.length > 0" class="card-title text-left text-muted">
+              Words that you can add to the vocabulary</h6>
+            <div *ngFor="let word of wordsArr;  let i = index" class="form-group row">
+              <div class="col-5">
+                <input [(ngModel)]="word.sourceText" [name]="'sourceText'+i" class="form-control" type="text">
+              </div>
+              <div class="col-5">
+                <input [(ngModel)]="word.targetText" [name]="'targetText'+i" class="form-control" type="text">
+              </div>
+              <button (click)="removeWord(word.sourceText)"
+                      [disabled]="!(word.targetText && word.sourceText)"
+                      class="btn btn-outline-warning">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button (click)="close()" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
+          <button (click)="translate()"
+                  [disabled]="phrase.length===0"
+                  class="btn btn-outline-info">Translate
+          </button>
+          <button (click)="addIntoVocabulary()"
+                  *ngIf="wordsArr.length > 0"
+                  class="btn btn-success">
+            Save words
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

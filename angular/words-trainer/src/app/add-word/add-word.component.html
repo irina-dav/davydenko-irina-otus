@@ -1,33 +1,42 @@
 <div class="container">
-  <button class="btn btn-outline-success" data-target="#addNewWordModal" data-toggle="modal" type="button">
+  <button class="btn btn-outline-success shadow rounded-0"
+          data-target="#addNewWordModal" data-toggle="modal" type="button">
     Add new word <i class="fas fa-plus"></i>
   </button>
-  <hr>
   <div aria-hidden="true" class="modal fade" id="addNewWordModal" tabindex="-1">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">Add new word into the list</h5>
+          <h5 class="modal-title">Add new word into the vocabulary</h5>
         </div>
         <div class="modal-body">
-          <form>
-            <div class="form-group row">
-              <label class="col-form-label col-4">Source word</label>
+          <form id="addNewWordForm">
+            <div class="form-group row align-items-center">
+              <label class="col-form-label col-4">Source word <br> (in English)</label>
               <div class="col-auto">
-                <input class="form-control" type="text">
+                <input [(ngModel)]="wordSource" class="form-control" id="wordSource" name="wordSource" type="text">
               </div>
             </div>
             <div class="form-group row">
               <label class="col-form-label col-4">Target word</label>
               <div class="col-auto">
-                <input class="form-control" type="text">
+                <input [(ngModel)]="wordTarget" class="form-control" id="wordTarget" name="wordTarget" type="text">
               </div>
             </div>
           </form>
         </div>
         <div class="modal-footer">
-          <button class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
-          <button class="btn btn-success">Add</button>
+          <button (click)="close()" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
+          <button (click)="translate()"
+                  [disabled]="wordSource.length===0"
+                  class="btn btn-outline-success">
+            Translate
+          </button>
+          <button (click)="addIntoVocabulary()"
+                  [disabled]="wordSource.length===0 || wordTarget.length===0"
+                  class="btn btn-success">
+            Save word
+          </button>
         </div>
       </div>
     </div>
