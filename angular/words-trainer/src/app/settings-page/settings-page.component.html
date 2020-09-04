@@ -18,21 +18,21 @@
             Number of words in a training session
           </label>
           <div class="col-1 alert alert-info font-weight-bold m-3 p-1 -text-height">
-            {{wordsNumber}}
+            {{settings.wordsNumber}}
           </div>
           <div class="col-5 form-row align-items-center">
             <div class="col-form-label col-auto">
-              <small>{{wordsNumberMin}}</small>
+              <small>{{settings.wordsNumberMin}}</small>
             </div>
             <div class="col col-10">
-              <input [(ngModel)]="wordsNumber" [max]="wordsNumberMax" [min]="wordsNumberMin"
+              <input [(ngModel)]="settings.wordsNumber" [max]="settings.wordsNumberMax" [min]="settings.wordsNumberMin"
                      class="form-control-range"
                      id="settingWordsNumber"
                      name="settingWordsNumber"
                      type="range">
             </div>
             <div class="col-form-label col-auto">
-              <small>{{wordsNumberMax}}</small>
+              <small>{{settings.wordsNumberMax}}</small>
             </div>
           </div>
         </div>
@@ -41,27 +41,30 @@
             Duration (in minutes) of a training session
           </label>
           <div class="col-1 alert alert-info font-weight-bold m-3 p-1">
-            {{duration}}
+            {{settings.duration}}
           </div>
           <div class="col-5 form-row align-items-center">
             <div class="col-form-label col-auto">
-              <small>{{durationMin}}</small>
+              <small>{{settings.durationMin}}</small>
             </div>
             <div class="col-10">
-              <input [(ngModel)]="duration" [max]="durationMax" [min]="durationMin"
+              <input [(ngModel)]="settings.duration" [max]="settings.durationMax" [min]="settings.durationMin"
                      class="form-control-range"
                      id="settingDuration"
                      name="settingDuration"
                      type="range">
             </div>
             <div class="col-form-label col-auto">
-              <small>{{durationMax}}</small>
+              <small>{{settings.durationMax}}</small>
             </div>
           </div>
         </div>
       </div>
       <div class="card-footer">
-        <button class="btn btn-outline-success">Save <i class="fas fa-check-double"></i></button>
+        <button class="btn btn-outline-success shadow rounded-0"
+                (click)="saveSettings()">
+          Save settings <i class="fas fa-check-double"></i>
+        </button>
       </div>
     </div>
   </form>

@@ -1,0 +1,9 @@
+{
+  "wordsNumber": 12,
+  "wordsNumberMin": 1,
+  "wordsNumberMax": 20,
+  "duration": 5,
+  "durationMin": 3,
+  "durationMax": 10,
+  "language": 0
+}

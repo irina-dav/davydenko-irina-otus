@@ -55,4 +55,21 @@ export class VocabularyService {
     return this.storage.loadVocabulary();
   }
 
+  getTranslations(n: number): Observable<Translation[]> {
+    const arr: Translation[] = [];
+    this.storage.loadVocabulary().subscribe(data => {
+      const arrIndex = this.shuffle(Array.from(Array(Math.min(n, data.length)).keys()));
+      arrIndex.map(idx => arr.push(data[idx]));
+    });
+    return of(arr);
+  }
+
+  private shuffle(arr: number[]): number[] {
+    for (let i = arr.length - 1; i > 0; i--) {
+      let j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+
 }

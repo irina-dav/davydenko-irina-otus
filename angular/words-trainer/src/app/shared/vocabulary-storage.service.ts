@@ -17,12 +17,12 @@ export class VocabularyStorageService {
   }
 
   loadVocabulary(): Observable<Translation[]> {
-    const vocabulary = localStorage.getItem('vocabulary');
+    const vocabulary = this.storage.getItem('vocabulary');
     return of(vocabulary ? JSON.parse(vocabulary) : [] as Translation[]);
   }
 
   updateVocabulary(words: Translation[]): void {
-    localStorage.setItem('vocabulary', JSON.stringify(words));
+    this.storage.setItem('vocabulary', JSON.stringify(words));
   }
 
   addTranslation(translation: Translation): Observable<IVocabularyResponse> {
