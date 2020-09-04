@@ -8,7 +8,16 @@ import {VocabularyService} from './vocabulary.service';
 })
 export class ViewService {
 
-  constructor(private vocabularyService: VocabularyService, private toastService: ToastrService) {
+  constructor(private vocabularyService: VocabularyService,
+              private toastService: ToastrService) {
+  }
+
+  notifySuccess(message: string): void {
+    this.toastService.success(message);
+  }
+
+  notifyWarn(message: string): void {
+    this.toastService.warning(message);
   }
 
   notifyError(error: any): void {

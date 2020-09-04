@@ -1,43 +1,48 @@
-<div class="mt-2 m-auto col col-xl-6 col-lg-10">
+<div class="mt-2 m-auto col col-xl-10 col-lg-12">
   <div>
-    <button (click)="startTrain()" *ngIf="!isTraining" class="btn btn-success text-nowrap">
+    <button (click)="startTrain()" *ngIf="!(isTraining || isDone)" class="btn btn-success text-nowrap">
       <i class="fas fa-play"></i> Start training!
     </button>
-    <button (click)="finishTrain()" *ngIf="isTraining" class="btn btn-warning">
+    <button (click)="stopTrain()" *ngIf="isTraining || isDone" class="btn btn-warning">
       <i class="far fa-stop-circle"></i> Finish training
     </button>
   </div>
   <hr>
-  <div *ngIf="isTraining" class="card shadow">
+  <div *ngIf="isTraining || isDone" class="card shadow">
     <h5 class="card-header">
-      <small>Task #{{ order }}</small>. Successfully done:
-      <span class="badge badge-pill badge-success">{{ successCount }}</span> out of
-      <span class="badge badge-pill badge-primary">{{ trainWords.length }}</span>
+      <small>Task #{{ training.order }}</small>. Successfully done:
+      <span class="badge badge-pill badge-success">{{ training.tasksSuccess.length }}</span> out of
+      <span class="badge badge-pill badge-primary">{{ training.taskCount }}</span>
     </h5>
     <div class="card-body">
-      <div class="card-title text-secondary">Translate the word and press button <b>Check</b></div>
-      <h3 class="card-text"> {{trainWords[order - 1].sourceText}}</h3>
-      <input [(ngModel)]="checkWord" class="form-control form-control-sm" name="checkWord"/>
-      <p class="mt-5 mb-0">{{ leftTimeMs | date:'mm:ss'}} Time left....</p>
-      <div class="progress" style="height: 5px;">
-        <div aria-valuemax="100" aria-valuemin="0"
-             aria-valuenow="{{ leftTimePercentage }}"
-             class="progress-bar bg-info progress-bar-animated"
-             role="progressbar"
-             style="width: {{ leftTimePercentage }}%"></div>
+      <div *ngIf="isTraining">
+        <div class="card-title text-secondary">Translate the word and press button <b>Check</b></div>
+        <h3 class="card-text"> {{currentTask.sourceText}}</h3>
+        <input name="checkWord" [(ngModel)]="isCurrentChecked ? currentTask.targetText : wordToCheck"
+               [readOnly]="isCurrentChecked"
+               class="form-control form-control-sm col-xl-5 col-lg-6 m-auto"/>
+        <app-progress></app-progress>
+      </div>
+      <div *ngIf="isDone">
+        <h3 class="card-title">The training is complete!</h3>
+        <h4 class="card-text">Your results:</h4>
+        <div class="card-text">Number of tasks: {{ this.training.taskCount }}</div>
+        <div class="card-text">Answered successfully: {{ this.training.tasksSuccess.length}} </div>
       </div>
     </div>
-    <div class="card-footer">
-      <button (click)="checkTranslation()" [disabled]="!(checkWord.length>0)" class="btn btn-outline-info mr-5">
+    <div class="card-footer" *ngIf="isTraining">
+      <button (click)="getHint()" [disabled]="isCurrentChecked" class="btn btn-outline-warning mr-1">
+        Hint <i class="far fa-eye"></i></button>
+      <button (click)="checkTranslation()" [disabled]="wordToCheck?.length=== 0 || isCurrentChecked" class="btn btn-outline-info mr-5">
         Check <i class="fas fa-check"></i></button>
-      <button (click)="prevWord()" [disabled]="order===1" class="btn btn-outline-success">
+      <button (click)="prevWord()" [disabled]="training.order===1" class="btn btn-outline-success mr-1">
         Back <i class="fas fa-arrow-left"></i></button>
-      <button (click)="nextWord()" [disabled]="order>=trainWords.length" class="btn btn-outline-success">
+      <button (click)="nextWord()" [disabled]="training.order>=training.taskCount" class="btn btn-outline-success">
         Next <i class="fas fa-arrow-right"></i></button>
-      <div *ngIf="checkResult" class="alert alert-success mt-3 p-1">
+      <div *ngIf="resultOfChecking" class="alert alert-success mt-3 p-1">
         <i class="far fa-thumbs-up"></i> Well done!
       </div>
-      <div *ngIf="checkResult === false" class="alert alert-warning mt-3 p-1">
+      <div *ngIf="resultOfChecking === false" class="alert alert-warning mt-3 p-1">
         <i class="fas fa-redo"></i> Wrong, try again!
       </div>
     </div>

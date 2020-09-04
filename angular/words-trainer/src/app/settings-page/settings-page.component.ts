@@ -1,4 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {TrainingSettings} from '../shared/interfaces';
+import {SettingsStorageService} from '../shared/settings-storage.service';
+import {ViewService} from '../shared/view.service';
 
 @Component({
   selector: 'app-settings-page',
@@ -7,17 +10,22 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SettingsPageComponent implements OnInit {
 
-  wordsNumber = 12;
-  wordsNumberMin = 1;
-  wordsNumberMax = 20;
+  settings: TrainingSettings;
 
-  duration = 5;
-  durationMin = 3;
-  durationMax = 10;
-
-  constructor() { }
-
-  ngOnInit(): void {
+  constructor(private storage: SettingsStorageService,
+              private view: ViewService) {
   }
 
+  ngOnInit(): void {
+    this.loadSettings();
+  }
+
+  loadSettings(): void {
+    this.settings = this.storage.loadTrainingSettings();
+  }
+
+  saveSettings(): void {
+    this.storage.updateTrainingSettings(this.settings);
+    this.view.notifySuccess('Settings were saved');
+  }
 }

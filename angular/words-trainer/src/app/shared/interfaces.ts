@@ -3,6 +3,20 @@ export interface Translation {
   targetText: string;
 }
 
+export interface TrainingSettings {
+  wordsNumber: number;
+  wordsNumberMin: number;
+  wordsNumberMax: number;
+  duration: number;
+  durationMin: number;
+  durationMax: number;
+  language: ELanguage;
+}
+
+export enum ELanguage {
+  English = 0
+}
+
 interface IResponseData {
   translatedText: string;
 }
