@@ -8,11 +8,13 @@ import {AddPhraseComponent} from './add-phrase/add-phrase.component';
 import {AddWordComponent} from './add-word/add-word.component';
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
+import {PageLeaveGuard} from './page-leave.guard';
 import {RecentPageComponent} from './recent-page/recent-page.component';
 import {SettingsPageComponent} from './settings-page/settings-page.component';
 import {TabsBarComponent} from './tabs-bar/tabs-bar.component';
 import {ProgressComponent} from './training-page/timer/progress.component';
 import {TrainingPageComponent} from './training-page/training-page.component';
+import { ConfirmDialogComponent } from './shared/confirm-dialog/confirm-dialog.component';
 
 @NgModule({
   declarations: [
@@ -23,10 +25,11 @@ import {TrainingPageComponent} from './training-page/training-page.component';
     RecentPageComponent,
     AddWordComponent,
     AddPhraseComponent,
-    ProgressComponent
+    ProgressComponent,
+    ConfirmDialogComponent
   ],
   imports: [
-    BrowserModule,
+    BrowserModule.withServerTransition({ appId: 'serverApp' }),
     AppRoutingModule,
     FormsModule,
     ReactiveFormsModule,
@@ -34,7 +37,7 @@ import {TrainingPageComponent} from './training-page/training-page.component';
     BrowserAnimationsModule,
     ToastrModule.forRoot(),
   ],
-  providers: [],
+  providers: [PageLeaveGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule {

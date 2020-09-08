@@ -1,4 +1,7 @@
+import {HttpClientTestingModule} from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {FormsModule} from '@angular/forms';
+import {ToastrModule, ToastrService} from 'ngx-toastr';
 
 import { AddWordComponent } from './add-word.component';
 
@@ -8,7 +11,9 @@ describe('AddWordComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AddWordComponent ]
+      imports: [HttpClientTestingModule, FormsModule, ToastrModule.forRoot()],
+      declarations: [AddWordComponent],
+      providers: [ToastrService]
     })
     .compileComponents();
   }));

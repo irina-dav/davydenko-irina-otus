@@ -1,5 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {Subscription} from 'rxjs';
+import {forkJoin, Observable, of, Subject, Subscription} from 'rxjs';
+import {take} from 'rxjs/operators';
+import {ComponentCanDeactivate} from '../page-leave.guard';
 import {Translation} from '../shared/interfaces';
 import {ViewService} from '../shared/view.service';
 import {TrainingService, TrainingStatus} from './training.service';
@@ -9,12 +11,13 @@ import {TrainingService, TrainingStatus} from './training.service';
   templateUrl: './training-page.component.html',
   styleUrls: ['./training-page.component.scss']
 })
-export class TrainingPageComponent implements OnInit, OnDestroy {
+export class TrainingPageComponent implements OnInit, OnDestroy, ComponentCanDeactivate {
 
   currentTask: Translation;
   wordToCheck: string;
   resultOfChecking: boolean;
   subTraining: Subscription;
+  canLeavePage: Subject<boolean> = new Subject<boolean>();
 
   constructor(public training: TrainingService,
               private view: ViewService) {
@@ -85,6 +88,22 @@ export class TrainingPageComponent implements OnInit, OnDestroy {
   clearCurrentAnswer(): void {
     this.wordToCheck = '';
     this.resultOfChecking = undefined;
+  }
+
+  canDeactivate(): boolean | Observable<boolean> {
+    this.canLeavePage.next(false);
+    if (this.isTraining) {
+      this.view.confirmThis('Leaving training',
+        'Training is in progress, are you sure you want to leave?', () => {
+        this.canLeavePage.next(true);
+      }, () => {
+        this.canLeavePage.next(false);
+      });
+      return this.canLeavePage.asObservable();
+    }
+    else {
+      return true;
+    }
   }
 
 }
