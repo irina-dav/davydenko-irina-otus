@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
 import {ToastrService} from 'ngx-toastr';
+import {Observable, Subject} from 'rxjs';
 import {EVocabularyCodeResponse, IVocabularyResponse} from './interfaces';
 import {VocabularyService} from './vocabulary.service';
 
@@ -8,7 +9,18 @@ import {VocabularyService} from './vocabulary.service';
 })
 export class ViewService {
 
-  constructor(private vocabularyService: VocabularyService, private toastService: ToastrService) {
+  private subjectConfirm = new Subject<any>();
+
+  constructor(private vocabularyService: VocabularyService,
+              private toastService: ToastrService) {
+  }
+
+  notifySuccess(message: string): void {
+    this.toastService.success(message);
+  }
+
+  notifyWarn(message: string): void {
+    this.toastService.warning(message);
   }
 
   notifyError(error: any): void {
@@ -31,6 +43,31 @@ export class ViewService {
       this.toastService.warning(
         `The translation ${description} not found in the vocabulary`, '', opt);
     }
+  }
+
+  confirmThis(title, message: string, okFn: () => void, cancelFn: () => void): void {
+    this.setConfirmation(title, message, okFn, cancelFn);
+  }
+
+  setConfirmation(title, message: string, okFn: () => void, cancelFn: () => void): void {
+    const that = this;
+    this.subjectConfirm.next({
+      type: 'confirm',
+      title,
+      text: message,
+      okFn(): void {
+        that.subjectConfirm.next();
+        okFn();
+      },
+      cancelFn(): void {
+        that.subjectConfirm.next();
+        cancelFn();
+      }
+    });
+  }
+
+  getMessage(): Observable<any> {
+    return this.subjectConfirm.asObservable();
   }
 
 }

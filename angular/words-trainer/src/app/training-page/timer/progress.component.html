@@ -1,0 +1,10 @@
+<div>
+  <p class="mt-5 mb-0">{{ trainingService.leftTimeMs | date:'mm:ss'}} Time left....</p>
+  <div class="progress" style="height: 5px;">
+    <div aria-valuemax="100" aria-valuemin="0"
+         class="progress-bar bg-info progress-bar-animated"
+         role="progressbar"
+         style="width: {{ trainingService.leftTimePercentage }}%">
+    </div>
+  </div>
+</div>

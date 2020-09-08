@@ -1,4 +1,9 @@
+import {HttpClientTestingModule} from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {FormsModule} from '@angular/forms';
+import {ToastrModule, ToastrService} from 'ngx-toastr';
+import {AddPhraseComponent} from '../add-phrase/add-phrase.component';
+import {AddWordComponent} from '../add-word/add-word.component';
 
 import { RecentPageComponent } from './recent-page.component';
 
@@ -8,7 +13,9 @@ describe('RecentPageComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ RecentPageComponent ]
+      declarations: [RecentPageComponent, AddWordComponent, AddPhraseComponent],
+      imports: [HttpClientTestingModule, FormsModule, ToastrModule.forRoot()],
+      providers: [ToastrService]
     })
     .compileComponents();
   }));

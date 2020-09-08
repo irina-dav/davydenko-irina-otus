@@ -1,25 +1,24 @@
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import {FormsModule} from '@angular/forms';
 import {ToastrModule, ToastrService} from 'ngx-toastr';
 
-import { SettingsPageComponent } from './settings-page.component';
+import { ProgressComponent } from './progress.component';
 
-describe('SettingsPageComponent', () => {
-  let component: SettingsPageComponent;
-  let fixture: ComponentFixture<SettingsPageComponent>;
+describe('ProgressComponent', () => {
+  let component: ProgressComponent;
+  let fixture: ComponentFixture<ProgressComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, FormsModule, ToastrModule.forRoot()],
-      declarations: [SettingsPageComponent],
+      declarations: [ProgressComponent],
+      imports: [HttpClientTestingModule, ToastrModule.forRoot()],
       providers: [ToastrService]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SettingsPageComponent);
+    fixture = TestBed.createComponent(ProgressComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

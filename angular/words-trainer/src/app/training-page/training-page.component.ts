@@ -1,88 +1,109 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {Subscription, timer} from 'rxjs';
-import {map, take, takeWhile} from 'rxjs/operators';
+import {forkJoin, Observable, of, Subject, Subscription} from 'rxjs';
+import {take} from 'rxjs/operators';
+import {ComponentCanDeactivate} from '../page-leave.guard';
 import {Translation} from '../shared/interfaces';
-import {VocabularyService} from '../shared/vocabulary.service';
+import {ViewService} from '../shared/view.service';
+import {TrainingService, TrainingStatus} from './training.service';
 
 @Component({
   selector: 'app-training-page',
   templateUrl: './training-page.component.html',
   styleUrls: ['./training-page.component.scss']
 })
-export class TrainingPageComponent implements OnInit, OnDestroy {
+export class TrainingPageComponent implements OnInit, OnDestroy, ComponentCanDeactivate {
 
-  trainWords: Translation[];
-  checkWord = '';
-  checkResult: boolean | undefined = undefined;
-  order = 0;
-  successCount = 0;
-  isTraining = false;
-  subTimer$ = new Subscription();
-  leftTimeMs: number;
-  leftTimePercentage: number;
-  durationMin = 5;
-  durationMs: number = this.durationMin * 60 * 1000;
-  sub: Subscription;
+  currentTask: Translation;
+  wordToCheck: string;
+  resultOfChecking: boolean;
+  subTraining: Subscription;
+  canLeavePage: Subject<boolean> = new Subject<boolean>();
 
-  constructor(private vocabularyService: VocabularyService) {
+  constructor(public training: TrainingService,
+              private view: ViewService) {
   }
 
   ngOnInit(): void {
+    if (this.training.status === TrainingStatus.Training) {
+      this.currentTask = this.training.getTask();
+    }
+    this.subTraining = this.training.TimeIsUp.subscribe(() =>
+        this.view.notifyWarn('Training time is up :('));
+    this.subTraining.add(this.training.DoneAll.subscribe(() =>
+      this.view.notifySuccess('The training is completed successfully!')));
   }
 
   ngOnDestroy(): void {
-    this.finishTimer();
-    if (this.sub) {
-      this.sub.unsubscribe();
+    this.stopTrain();
+    if (this.subTraining) {
+      this.subTraining.unsubscribe();
     }
   }
 
-  startTimer(): void {
-    this.subTimer$ = timer(0, 1000).pipe(
-      take(this.leftTimeMs),
-      map(() => this.leftTimeMs -= 1000),
-      takeWhile(t => t > 0, true)
-    ).subscribe((v) => this.leftTimePercentage = 100 * (v / this.durationMs));
+  get isTraining(): boolean {
+    return this.training.status === TrainingStatus.Training;
   }
 
-  finishTimer(): void {
-    if (this.subTimer$) {
-      this.subTimer$.unsubscribe();
-    }
+  get isDone(): boolean {
+    return this.training.status === TrainingStatus.Done;
+  }
+
+  get isCurrentChecked(): boolean {
+    return this.training.tasksSuccess.includes(this.currentTask);
   }
 
   startTrain(): void {
-    this.isTraining = true;
-    this.order = 1;
-    this.sub = this.vocabularyService.getTranslationsAll()
-      .subscribe(data => this.trainWords = data);
-    this.leftTimeMs = this.durationMs;
-    this.leftTimePercentage = 100;
-    this.startTimer();
+    this.training.start();
+    if (this.training.taskCount === 0) {
+      this.view.notifyWarn('There are no words for training. Please, add new words to the vocabulary.');
+      this.stopTrain();
+    } else {
+      this.nextWord();
+    }
   }
 
-  finishTrain(): void {
-    this.isTraining = false;
-    this.finishTimer();
-  }
-
-  prevWord(): void {
-    this.order--;
-    this.checkResult = undefined;
-    this.checkWord = '';
-  }
-
-  nextWord(): void {
-    this.order++;
-    this.checkResult = undefined;
-    this.checkWord = '';
+  stopTrain(): void {
+    this.training.stop();
   }
 
   checkTranslation(): void {
-    const currWord = this.trainWords[this.order - 1];
-    this.checkResult = (currWord.targetText === this.checkWord);
-    if (this.checkResult) {
-      this.successCount++;
+    this.resultOfChecking = this.training.checkTranslation(this.wordToCheck);
+  }
+
+  getHint(): void {
+    this.wordToCheck = this.training.getHint();
+    this.resultOfChecking = undefined;
+  }
+
+  prevWord(): void {
+    this.clearCurrentAnswer();
+    this.currentTask = this.training.prevWord();
+  }
+
+  nextWord(): void {
+    this.clearCurrentAnswer();
+    this.currentTask = this.training.nextWord();
+  }
+
+  clearCurrentAnswer(): void {
+    this.wordToCheck = '';
+    this.resultOfChecking = undefined;
+  }
+
+  canDeactivate(): boolean | Observable<boolean> {
+    this.canLeavePage.next(false);
+    if (this.isTraining) {
+      this.view.confirmThis('Leaving training',
+        'Training is in progress, are you sure you want to leave?', () => {
+        this.canLeavePage.next(true);
+      }, () => {
+        this.canLeavePage.next(false);
+      });
+      return this.canLeavePage.asObservable();
+    }
+    else {
+      return true;
     }
   }
+
 }

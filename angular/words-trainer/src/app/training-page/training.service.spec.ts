@@ -2,16 +2,17 @@ import {HttpClientTestingModule} from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import {ToastrModule, ToastrService} from 'ngx-toastr';
 
-import { TranslatorService } from './translator.service';
+import { TrainingService } from './training.service';
 
-describe('TranslatorService', () => {
-  let service: TranslatorService;
+describe('TrainingService', () => {
+  let service: TrainingService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule]
+      imports: [HttpClientTestingModule, ToastrModule.forRoot()],
+      providers: [ToastrService]
     });
-    service = TestBed.inject(TranslatorService);
+    service = TestBed.inject(TrainingService);
   });
 
   it('should be created', () => {
